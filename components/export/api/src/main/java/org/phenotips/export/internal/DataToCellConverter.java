@@ -24,6 +24,7 @@ import org.phenotips.data.FeatureMetadatum;
 import org.phenotips.data.Patient;
 import org.phenotips.data.PatientData;
 import org.phenotips.data.PhenoTipsDate;
+import org.phenotips.data.internal.PhenoTipsGene;
 import org.phenotips.translation.TranslationManager;
 import org.phenotips.vocabulary.internal.solr.SolrVocabularyTerm;
 
@@ -304,11 +305,12 @@ public class DataToCellConverter
     public void genesSetup(Set<String> enabledFields) throws Exception
     {
         String sectionName = "genes";
-        String[] fieldIds = { "genes", "genes_status", "genes_strategy", "genes_comments" };
+        String[] fieldIds = { "genes", "genes_symbol", "genes_status", "genes_strategy", "genes_comments" };
         // FIXME These will not work properly in different configurations
         String[][] headerIds =
-            { { "genes" }, { "status", "genes" }, { "strategy", "status", "genes" },
-            { "comments", "strategy", "status", "genes" } };
+            { { "genes" }, { "symbol", "genes" }, { "status", "symbol", "genes" },
+                { "strategy", "symbol", "status", "genes" },
+                { "comments", "strategy", "status", "symbol", "genes" } };
         Set<String> present = addHeaders(fieldIds, headerIds, enabledFields);
         this.enabledHeaderIdsBySection.put(sectionName, present);
     }
@@ -328,7 +330,7 @@ public class DataToCellConverter
                 hX, 1, StyleOption.HEADER);
         section.addCell(cell);
         hX++;
-        List<String> fields = Arrays.asList("status", "strategy", "comments");
+        List<String> fields = Arrays.asList("symbol", "status", "strategy", "comments");
 
         for (String field : fields) {
             if (!present.contains(field)) {
@@ -442,11 +444,15 @@ public class DataToCellConverter
             Arrays.asList("zygosity", "effect", "interpretation", "inheritance", "segregation", "evidence", "sanger");
         List<String> evidenceTranslates = Arrays.asList("rare", "predicted", "reported");
 
+        PatientData<List<PhenoTipsGene>> geneData = patient.getData("genes");
+
         for (Map<String, String> variant : variants) {
             int x = 0;
             String variantGene = variant.get("gene");
-            DataCell cell = new DataCell(variantGene, x++, y);
+            String geneSymbol = getGeneSymbol(variantGene, geneData);
+            DataCell cell = new DataCell(geneSymbol, x++, y);
             section.addCell(cell);
+
             String variantName = variant.get("cdna");
             cell = new DataCell(variantName, x++, y);
             section.addCell(cell);
@@ -472,6 +478,24 @@ public class DataToCellConverter
         return section;
     }
 
+    private String getGeneSymbol(String geneId, PatientData<List<PhenoTipsGene>> data)
+    {
+        if (data == null) {
+            return null;
+        }
+
+        String symbol = geneId;
+        List<PhenoTipsGene> genes = data.getValue();
+        if (genes != null && !genes.isEmpty()) {
+            for (PhenoTipsGene gene : genes) {
+                if ((geneId).equals(gene.getId())) {
+                    return gene.getName();
+                }
+            }
+        }
+        return symbol;
+    }
+
     public DataSection genesBody(Patient patient) throws Exception
     {
         String sectionName = "genes";
@@ -483,10 +507,15 @@ public class DataToCellConverter
         DataSection section = new DataSection();
         int y = 0;
 
-        PatientData<Map<String, String>> allGenes = patient.getData("genes");
+        PatientData<List<PhenoTipsGene>> data = patient.getData("genes");
+        if (data == null) {
+            return null;
+        }
+
+        List<PhenoTipsGene> genes = data.getValue();
 
         // empties should be created in the case that there are no genes to write
-        if (allGenes == null || !allGenes.isIndexed()) {
+        if (genes == null || genes.isEmpty()) {
             /* Status and gene name columns are always present */
             for (int i = 0; i < present.size(); i++) {
                 DataCell cell = new DataCell("", i, y);
@@ -500,9 +529,13 @@ public class DataToCellConverter
             Arrays.asList("sequencing", "deletion", "familial_mutation", "common_mutations");
         DataCell cell;
 
-        for (Map<String, String> gene : allGenes) {
+        for (PhenoTipsGene gene : genes) {
             int x = 0;
-            String geneName = gene.get("gene");
+            String geneId = gene.getId();
+            cell = new DataCell(geneId, x++, y);
+            section.addCell(cell);
+
+            String geneName = gene.getName();
             cell = new DataCell(geneName, x++, y);
             section.addCell(cell);
 
@@ -510,11 +543,15 @@ public class DataToCellConverter
                 if (!present.contains(field)) {
                     continue;
                 }
-                String value = gene.get(field);
+                String value = "";
                 if ("strategy".equals(field)) {
+                    value = gene.getStrategy();
                     value = parseMultivalueField(value, strategyTranslates, "PhenoTips.GeneClass_strategy_");
                 } else if ("status".equals(field)) {
+                    value = gene.getStatus();
                     value = this.translationManager.translate("PhenoTips.GeneClass_status_" + value);
+                } else {
+                    value = gene.getComment();
                 }
                 cell = new DataCell(value, x++, y);
                 section.addCell(cell);
