@@ -692,6 +692,24 @@
               <justification>New methods for configuring which sections should be collapsed and expanded in edit mode by default</justification>
             </difference>
             <difference>
+              <className>org/phenotips/configuration/RecordConfiguration</className>
+              <differenceType>7012</differenceType>
+              <method>java.util.List getAllFields()</method>
+              <justification>New method that returns a list of ClassPropertyReference objects for all recorded fields for configuration</justification>
+            </difference>
+            <difference>
+              <className>org/phenotips/configuration/RecordConfiguration</className>
+              <differenceType>7012</differenceType>
+              <method>java.util.List getEnabledFields()</method>
+              <justification>New method that returns a list of ClassPropertyReference objects for all enabled fields for configuration</justification>
+            </difference>
+            <difference>
+              <className>org/phenotips/configuration/RecordElement</className>
+              <differenceType>7012</differenceType>
+              <method>java.util.List getFields()</method>
+              <justification>New method that returns a list of ClassPropertyReference objects for all recorded fields for element</justification>
+            </difference>
+            <difference>
               <className>org/phenotips/data/PatientData</className>
               <differenceType>7012</differenceType>
               <method>boolean containsKey(java.lang.String)</method>
@@ -749,6 +767,18 @@
               <differenceType>7012</differenceType>
               <method>org.xwiki.security.authorization.Right getGrantedRight()</method>
               <justification>New API method bringing XWiki Rights into PhenoTips Permissions.</justification>
+            </difference>
+            <difference>
+              <className>org/phenotips/configuration/Record*</className>
+              <differenceType>7012</differenceType>
+              <method>void set*(*)</method>
+              <justification>New API methods needed for making the configuration more extensible.</justification>
+            </difference>
+            <difference>
+              <className>org/phenotips/configuration/RecordConfigurationManager</className>
+              <differenceType>7012</differenceType>
+              <method>org.phenotips.configuration.RecordConfiguration getConfiguration(java.lang.String)</method>
+              <justification>New API methods needed for making the configuration more extensible.</justification>
             </difference>
             <difference>
               <className>org/phenotips/data/permissions/PermissionsManager</className>

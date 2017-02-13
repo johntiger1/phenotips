@@ -20,6 +20,7 @@ package org.phenotips.configuration;
 import org.phenotips.Constants;
 
 import org.xwiki.model.EntityType;
+import org.xwiki.model.reference.ClassPropertyReference;
 import org.xwiki.model.reference.DocumentReference;
 import org.xwiki.model.reference.EntityReference;
 import org.xwiki.stability.Unstable;
@@ -58,6 +59,22 @@ public interface RecordConfiguration
     List<RecordSection> getAllSections();
 
     /**
+     * Update the list of available section.
+     *
+     * @param sections a list of sections, may be empty
+     * @since 1.3M3
+     */
+    void setSections(List<RecordSection> sections);
+
+    /**
+     * A list of {@link ClassPropertyReference} objects representing all enabled fields specified for the
+     * {@link RecordConfiguration} implementation.
+     *
+     * @return a list of {@link ClassPropertyReference} objects representing enabled fields
+     */
+    List<ClassPropertyReference> getEnabledFields();
+
+    /**
      * The list of fields displayed in the patient record.
      *
      * @return an unmodifiable ordered list of field names, empty if none are enabled or the configuration is missing
@@ -70,8 +87,18 @@ public interface RecordConfiguration
      *
      * @return an unmodifiable ordered list of field names, empty if no non-identifiable fields are enabled or the
      *         configuration is missing
+     * @deprecated since 1.3, this functionality has moved in the Consents module
      */
+    @Deprecated
     List<String> getEnabledNonIdentifiableFieldNames();
+
+    /**
+     * A list of {@link ClassPropertyReference} objects representing all fields specified for the
+     * {@link RecordConfiguration} implementation.
+     *
+     * @return a list of {@link ClassPropertyReference} objects representing fields
+     */
+    List<ClassPropertyReference> getAllFields();
 
     /**
      * The list of possible fields defined in the application. This doesn't include metadata stored in separate

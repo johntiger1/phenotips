@@ -27,4 +27,45 @@
   </parent>
   <artifactId>phenotips-studies-api</artifactId>
   <name>PhenoTips - Studies - Java APIs</name>
+  <dependencies>
+    <dependency>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>phenotips-constants</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>application-configuration-api</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <!-- Test dependencies -->
+    <dependency>
+      <groupId>org.xwiki.commons</groupId>
+      <artifactId>xwiki-commons-tool-test-component</artifactId>
+      <version>${xwiki.version}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>javax.servlet</groupId>
+      <artifactId>javax.servlet-api</artifactId>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <configuration>
+          <!-- This would speed up build time, but we're playing with the singleton ComponentManagerRegistry and this causes concurrency issues. -->
+          <parallel>none</parallel>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+
+  <properties>
+    <coverage.instructionRatio>0.86</coverage.instructionRatio>
+  </properties>
 </project>

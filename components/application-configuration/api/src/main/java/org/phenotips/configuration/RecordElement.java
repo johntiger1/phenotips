@@ -17,6 +17,7 @@
  */
 package org.phenotips.configuration;
 
+import org.xwiki.model.reference.ClassPropertyReference;
 import org.xwiki.stability.Unstable;
 import org.xwiki.uiextension.UIExtension;
 
@@ -46,23 +47,33 @@ public interface RecordElement
     String getName();
 
     /**
-     * Whether this element is going to be displayed in the patient record or not.
+     * Whether this element is going to be displayed in the record or not.
      *
      * @return {@code true} if this element must be displayed, {@code false} otherwise
      */
     boolean isEnabled();
 
     /**
-     * Whether this element contains any private indentifiable information (PII) about the patient or not.
+     * Whether this element contains any private identifiable information (PII) or not.
      *
      * @return {@code true} if this element contains PII, {@code false} otherwise
+     * @deprecated since 1.3, this functionality has moved in the Consents module
      */
+    @Deprecated
     boolean containsPrivateIdentifiableInformation();
 
     /**
-     * The list of fields displayed in the patient record by this element.
+     * A list of {@link ClassPropertyReference} objects representing the fields specified for the {@link RecordElement}
+     * implementation.
      *
-     * @return an unmodifiable ordered list of field names, empty if this element doesn't display patient fields
+     * @return a list of {@link ClassPropertyReference} objects representing element fields
+     */
+    List<ClassPropertyReference> getFields();
+
+    /**
+     * The list of fields displayed in the record by this element.
+     *
+     * @return an unmodifiable ordered list of field names, empty if this element doesn't display any modifiable fields
      */
     List<String> getDisplayedFields();
 
@@ -72,4 +83,12 @@ public interface RecordElement
      * @return a valid section
      */
     RecordSection getContainingSection();
+
+    /**
+     * Sets whether this element is going to be displayed in the patient record or not.
+     *
+     * @param enabled {@code true} if this element should be displayed, {@code false} otherwise
+     * @since 1.3M3
+     */
+    void setEnabled(boolean enabled);
 }

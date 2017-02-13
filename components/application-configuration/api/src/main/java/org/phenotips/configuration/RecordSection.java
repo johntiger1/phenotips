@@ -23,7 +23,7 @@ import org.xwiki.uiextension.UIExtension;
 import java.util.List;
 
 /**
- * Represents a section that can be displayed in the patient record.
+ * Represents a section that can be displayed in the record.
  *
  * @version $Id$
  * @since 1.0M9
@@ -39,7 +39,7 @@ public interface RecordSection
     UIExtension getExtension();
 
     /**
-     * The name of this section, displayed in the patient record and in the form designer.
+     * The name of this section, displayed in the record and in the form designer.
      *
      * @return a user-friendly title for this section
      */
@@ -55,7 +55,7 @@ public interface RecordSection
     /**
      * Whether this section should be expanded and fully visible in edit mode by default.
      *
-     * @return {@code true} if this section must be expanded, {@code false} otherwis
+     * @return {@code true} if this section must be expanded, {@code false} otherwise
      */
     boolean isExpandedByDefault();
 
@@ -74,4 +74,28 @@ public interface RecordSection
      *         configured or enabled
      */
     List<RecordElement> getEnabledElements();
+
+    /**
+     * Set whether this section and its elements are going to be displayed in the record or not.
+     *
+     * @param enabled {@code true} if this section must be displayed, {@code false} otherwise
+     * @since 1.3M2
+     */
+    void setEnabled(boolean enabled);
+
+    /**
+     * Set whether this section should be expanded and fully visible in edit mode by default.
+     *
+     * @param expanded {@code true} if this section must be expanded, {@code false} otherwise
+     * @since 1.3M2
+     */
+    void setExpandedByDefault(boolean expanded);
+
+    /**
+     * Set the list of elements configured in this section.
+     *
+     * @param elements the new list of elements to be included in this section, may be empty
+     * @since 1.3M2
+     */
+    void setElements(List<RecordElement> elements);
 }
