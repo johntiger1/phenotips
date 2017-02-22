@@ -159,6 +159,12 @@ public abstract class AbstractSolrVocabulary implements Vocabulary
     }
 
     @Override
+    public List<VocabularyTerm> search(String input, String category, int maxResults, String sort, String customFilter)
+    {
+        return null;
+    }
+
+    @Override
     public long count(Map<String, ?> fieldValues)
     {
         return count(this.generateLuceneQuery(fieldValues));

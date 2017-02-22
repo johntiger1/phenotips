@@ -78,6 +78,16 @@ public interface Vocabulary
     List<VocabularyTerm> search(Map<String, ?> fieldValues, Map<String, String> queryOptions);
 
     /**
+     * Suggest the terms that best match the user's input. This returns at most 10 matching terms, sorted by the match
+     * score.
+     *
+     * @param input the text that the user entered
+     * @return a list of suggestions, possibly empty.
+     * @since 1.3
+     */
+    List<VocabularyTerm> search(String input);
+
+    /**
      * Suggest the terms that best match the user's input. This may either search in all
      * {@link #getSupportedCategories() supported categories}, or in a "default" category, depending on the vocabulary
      * implementation.
