@@ -76,7 +76,7 @@ import org.slf4j.Logger;
 public class RemoteGeneNomenclature implements Vocabulary, Initializable
 {
     /** The list of supported categories for this vocabulary. */
-    private static final Collection<String> SUPPORTED_CATEGORIES = Collections.emptyList();
+    private static final Collection<String> SUPPORTED_CATEGORIES = Collections.singletonList("gene");
 
     /**
      * Object used to mark in the cache that a term doesn't exist, since null means that the cache doesn't contain the
