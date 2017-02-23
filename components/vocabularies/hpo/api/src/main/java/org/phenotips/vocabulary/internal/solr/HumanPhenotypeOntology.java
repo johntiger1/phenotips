@@ -22,6 +22,8 @@ import org.phenotips.vocabulary.VocabularyTerm;
 import org.xwiki.component.annotation.Component;
 
 import java.text.MessageFormat;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -51,6 +53,9 @@ import org.apache.solr.common.params.SpellingParams;
 @Singleton
 public class HumanPhenotypeOntology extends AbstractOBOSolrVocabulary
 {
+    /** The list of supported categories for this vocabulary. */
+    private static final Collection<String> SUPPORTED_CATEGORIES = Arrays.asList("phenotype", "phenotype-qualifier");
+
     /** For determining if a query is a an id. */
     private static final Pattern ID_PATTERN = Pattern.compile("^HP:[0-9]+$", Pattern.CASE_INSENSITIVE);
 
@@ -83,6 +88,12 @@ public class HumanPhenotypeOntology extends AbstractOBOSolrVocabulary
     public String getName()
     {
         return "The Human Phenotype Ontology (HPO)";
+    }
+
+    @Override
+    public Collection<String> getSupportedCategories()
+    {
+        return Collections.unmodifiableCollection(SUPPORTED_CATEGORIES);
     }
 
     @Override

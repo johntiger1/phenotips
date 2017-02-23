@@ -78,6 +78,11 @@ public class OrphanetRareDiseaseOntology extends AbstractOWLSolrVocabulary
 
     private static final String ON_PROPERTY_LABEL = "onProperty";
 
+    private static final String DISEASE = "disease";
+
+    /** The list of supported categories for this vocabulary. */
+    private static final Collection<String> SUPPORTED_CATEGORIES = Collections.singletonList(DISEASE);
+
     /**
      * The pattern for prevalence values. Values are expected to be in fraction format, and may include "<" or ">" or
      * ranges (e.g. "1-9"), or single digits in the numerator.
@@ -639,5 +644,11 @@ public class OrphanetRareDiseaseOntology extends AbstractOWLSolrVocabulary
             + "synonym^6 synonymSpell^10 synonymStub^4 "
             + "def^3 defSpell^5 text^1 textSpell^2 textStub^0.5");
         return query;
+    }
+
+    @Override
+    public Collection<String> getSupportedCategories()
+    {
+        return Collections.unmodifiableCollection(SUPPORTED_CATEGORIES);
     }
 }

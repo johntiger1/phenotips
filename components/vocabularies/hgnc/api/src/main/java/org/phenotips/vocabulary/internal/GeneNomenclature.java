@@ -66,6 +66,9 @@ import org.joda.time.format.ISODateTimeFormat;
 @Singleton
 public class GeneNomenclature extends AbstractCSVSolrVocabulary
 {
+    /** The list of supported categories for this vocabulary. */
+    private static final Collection<String> SUPPORTED_CATEGORIES = Collections.singletonList("gene");
+
     private static final String ID_FIELD_NAME = "id";
 
     private static final String SYMBOL_FIELD_NAME = "symbol";
@@ -156,6 +159,12 @@ public class GeneNomenclature extends AbstractCSVSolrVocabulary
     public String getName()
     {
         return "HUGO Gene Nomenclature Committee's GeneNames (HGNC)";
+    }
+
+    @Override
+    public Collection<String> getSupportedCategories()
+    {
+        return SUPPORTED_CATEGORIES;
     }
 
     @Override
