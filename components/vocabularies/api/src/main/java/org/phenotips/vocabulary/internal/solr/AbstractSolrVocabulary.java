@@ -161,7 +161,7 @@ public abstract class AbstractSolrVocabulary implements Vocabulary
     @Override
     public List<VocabularyTerm> search(String input, String category, int maxResults, String sort, String customFilter)
     {
-        return null;
+        return search(input, maxResults, sort, customFilter);
     }
 
     @Override

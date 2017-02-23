@@ -80,10 +80,10 @@ public class MendelianInheritanceInMan extends AbstractCSVSolrVocabulary
     private static final String STANDARD_NAME = "MIM";
 
     /** The default filter for disease OMIM vocabulary searches. */
-    private static final String DEFAULT_DISEASE_FILTER = "-(nameSort:\\** nameSort:\\+* nameSort:\\^*)";
+    private static final String DEFAULT_DISEASE_FILTER = "-(symbol:\\* symbol:\\+ symbol:\\^)";
 
     /** The default filter for GENE OMIM vocabulary searches. */
-    private static final String DEFAULT_GENE_FILTER = "nameSort:\\** nameSort:\\+*";
+    private static final String DEFAULT_GENE_FILTER = "symbol:\\* symbol:\\+";
 
     private static final String GENE_ANNOTATIONS_URL = "http://omim.org/static/omim/data/mim2gene.txt";
 
@@ -162,6 +162,28 @@ public class MendelianInheritanceInMan extends AbstractCSVSolrVocabulary
     protected String getCoreName()
     {
         return getIdentifier();
+    }
+
+    @Override
+    public List<VocabularyTerm> search(String input, String category, int maxResults, String sort, String customFilter)
+    {
+        if (!getSupportedCategories().contains(category)) {
+            this.logger.warn("The provided category [{}] is not supported by the OMIM vocabulary.", category);
+            return Collections.emptyList();
+        }
+        final String filter = StringUtils.defaultIfBlank(customFilter, generateDefaultFilter(category));
+        return search(input, maxResults, sort, filter);
+    }
+
+    /**
+     * Generates the default filter for the OMIM vocabulary given the {@code category vocabulary category}.
+     *
+     * @param category the valid vocabulary category
+     * @return the default filter for the query
+     */
+    private String generateDefaultFilter(final String category)
+    {
+        return DISEASE.equals(category) ? DEFAULT_DISEASE_FILTER : DEFAULT_GENE_FILTER;
     }
 
     @Override
@@ -271,7 +293,10 @@ public class MendelianInheritanceInMan extends AbstractCSVSolrVocabulary
     {
         String queryString = originalQuery.trim();
         String escapedQuery = ClientUtils.escapeQueryChars(queryString);
-        query.setFilterQueries(StringUtils.defaultIfBlank(customFq, "+type:disorder"));
+
+        if (StringUtils.isNotBlank(customFq)) {
+            query.setFilterQueries(customFq);
+        }
         query.setQuery(escapedQuery);
         query.set(SpellingParams.SPELLCHECK_Q, queryString);
         String lastWord = StringUtils.substringAfterLast(escapedQuery, " ");

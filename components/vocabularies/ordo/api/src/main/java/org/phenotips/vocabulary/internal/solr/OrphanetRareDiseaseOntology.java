@@ -21,6 +21,7 @@ import org.phenotips.vocabulary.VocabularyTerm;
 
 import org.xwiki.component.annotation.Component;
 
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
@@ -80,8 +81,17 @@ public class OrphanetRareDiseaseOntology extends AbstractOWLSolrVocabulary
 
     private static final String DISEASE = "disease";
 
+    private static final String GENE = "gene";
+
+    /** The default filter for gene ORDO vocabulary searches. */
+    private static final String DEFAULT_GENE_FILTER = "term_group:\"disorder-associated locus\" term_group:\"gene "
+        + "with protein product\" term_group:\"non-coding RNA\"";
+
+    /** The default filter for disease ORDO vocabulary searches. */
+    private static final String DEFAULT_DISEASE_FILTER = "-(" + DEFAULT_GENE_FILTER + ")";
+
     /** The list of supported categories for this vocabulary. */
-    private static final Collection<String> SUPPORTED_CATEGORIES = Collections.singletonList(DISEASE);
+    private static final Collection<String> SUPPORTED_CATEGORIES = Arrays.asList(DISEASE, GENE);
 
     /**
      * The pattern for prevalence values. Values are expected to be in fraction format, and may include "<" or ">" or
@@ -573,6 +583,32 @@ public class OrphanetRareDiseaseOntology extends AbstractOWLSolrVocabulary
             results.add(new SolrVocabularyTerm(doc, this));
         }
         return Collections.unmodifiableList(results);
+    }
+
+    @Override
+    public List<VocabularyTerm> search(
+        @Nullable final String input,
+        @Nullable final String category,
+        final int maxResults, String sort,
+        @Nullable final String customFilter)
+    {
+        if (!getSupportedCategories().contains(category)) {
+            this.logger.warn("The provided category [{}] is not supported by the ORDO vocabulary.", category);
+            return Collections.emptyList();
+        }
+        final String filter = StringUtils.defaultIfBlank(customFilter, generateDefaultFilter(category));
+        return search(input, maxResults, sort, filter);
+    }
+
+    /**
+     * Generates the default filter for the ORDO vocabulary given the {@code category vocabulary category}.
+     *
+     * @param category the valid vocabulary category
+     * @return the default filter for the query
+     */
+    private String generateDefaultFilter(final String category)
+    {
+        return DISEASE.equals(category) ? DEFAULT_DISEASE_FILTER : DEFAULT_GENE_FILTER;
     }
 
     /**
