@@ -55,8 +55,6 @@ import org.slf4j.Logger;
 @Singleton
 public class DefaultVocabularyManager implements VocabularyManager, Initializable
 {
-    private static final String SORT_ORDER = "score desc";
-
     private static final String SCORE_LABEL = "score";
 
     /** The currently available vocabularies. */
@@ -179,7 +177,7 @@ public class DefaultVocabularyManager implements VocabularyManager, Initializabl
     {
         final List<VocabularyTerm> results = new ArrayList<>();
         for (final Vocabulary vocabulary : categorizedVocabularies) {
-            results.addAll(vocabulary.search(input, category, maxResults, SORT_ORDER, null));
+            results.addAll(vocabulary.search(input, category, maxResults, null, null));
         }
 
         sortTermsByScore(results);
