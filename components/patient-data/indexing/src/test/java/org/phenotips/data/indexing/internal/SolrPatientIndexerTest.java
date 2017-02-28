@@ -46,6 +46,7 @@ import org.xwiki.test.mockito.MockitoComponentMockingRule;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
@@ -65,11 +66,18 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
+import org.mockito.Matchers;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.mockito.internal.matchers.CapturingMatcher;
 import org.slf4j.Logger;
 
+import com.xpn.xwiki.XWiki;
+import com.xpn.xwiki.XWikiContext;
+import com.xpn.xwiki.doc.XWikiDocument;
+import com.xpn.xwiki.objects.classes.BaseClass;
+import com.xpn.xwiki.objects.classes.StaticListClass;
 import com.xpn.xwiki.web.Utils;
 
 import static org.mockito.Matchers.any;
@@ -82,6 +90,14 @@ import static org.mockito.Mockito.when;
 
 public class SolrPatientIndexerTest
 {
+    private static final String STATUS_KEY = "status";
+
+    private static final String STRATEGY_KEY = "strategy";
+
+    private static List<String> STATUS_VALUES = Arrays.asList("candidate", "rejected", "solved");
+
+    private static List<String> STRATEGY_VALUES = Arrays.asList("sequencing", "deletion", "familial_mutation",
+        "common_mutations");
 
     @Rule
     public MockitoComponentMockingRule<PatientIndexer> mocker =
@@ -102,6 +118,12 @@ public class SolrPatientIndexerTest
     @Mock
     private VocabularyManager vm;
 
+    @Mock
+    private Provider<XWikiContext> provider;
+
+    @Mock
+    private XWiki xwiki;
+
     private PatientIndexer patientIndexer;
 
     private Logger logger;
@@ -115,7 +137,7 @@ public class SolrPatientIndexerTest
     private DocumentReference patientDocReference;
 
     @Before
-    public void setUp() throws ComponentLookupException
+    public void setUp() throws Exception
     {
 
         MockitoAnnotations.initMocks(this);
@@ -127,6 +149,23 @@ public class SolrPatientIndexerTest
         ReflectionUtils.setFieldValue(new ComponentManagerRegistry(), "cmProvider", this.mockProvider);
         when(this.mockProvider.get()).thenReturn(this.cm);
         when(this.cm.getInstance(VocabularyManager.class)).thenReturn(this.vm);
+
+        when(this.cm.getInstance(XWikiContext.TYPE_PROVIDER)).thenReturn(this.provider);
+        XWikiContext context = mock(XWikiContext.class);
+        when(this.provider.get()).thenReturn(context);
+        XWiki x = mock(XWiki.class);
+        when(context.getWiki()).thenReturn(x);
+
+        DocumentReference geneDocRef = new DocumentReference("wiki", "PhenoTips", "GeneClass");
+        XWikiDocument geneDoc = new XWikiDocument(geneDocRef);
+        when(Matchers.any(PhenoTipsGene.class).getGeneDoc()).thenReturn(geneDoc);
+        geneDoc.setNew(false);
+        XWikiDocument spy = Mockito.spy(geneDoc);
+        BaseClass c = mock(BaseClass.class);
+        when(spy.getXClass()).thenReturn(c);
+        StaticListClass lc1 = mock(StaticListClass.class);
+        when(c.get(STATUS_KEY)).thenReturn(lc1);
+        when(lc1.getList(context)).thenReturn(STATUS_VALUES);
 
         this.permissions = this.mocker.getInstance(PermissionsManager.class);
         this.qm = this.mocker.getInstance(QueryManager.class);
@@ -217,9 +256,7 @@ public class SolrPatientIndexerTest
         doReturn(Collections.EMPTY_SET).when(this.patient).getFeatures();
 
         List<PhenoTipsGene> fakeGenes = new LinkedList<>();
-        PhenoTipsGene fakeGene = new PhenoTipsGene(null, "CANDIDATE1", null, null, null);
-        fakeGenes.add(fakeGene);
-        fakeGene = new PhenoTipsGene(null, "CANDIDATE2", "candidate", null, null);
+        PhenoTipsGene fakeGene = new PhenoTipsGene(null, "CANDIDATE1", "candidate", null, null);
         fakeGenes.add(fakeGene);
         fakeGene = new PhenoTipsGene(null, "REJECTED1", "rejected", null, null);
         fakeGenes.add(fakeGene);
@@ -241,10 +278,8 @@ public class SolrPatientIndexerTest
 
         Collection<Object> indexedGenes;
         indexedGenes = inputDoc.getFieldValues("candidate_genes");
-        Assert.assertEquals(2, indexedGenes.size());
-        for (Object s : indexedGenes) {
-            Assert.assertTrue(((String) s).startsWith("CANDIDATE"));
-        }
+        Assert.assertEquals(1, indexedGenes.size());
+        Assert.assertEquals("CANDIDATE1", indexedGenes.iterator().next());
 
         indexedGenes = inputDoc.getFieldValues("solved_genes");
         Assert.assertEquals(1, indexedGenes.size());

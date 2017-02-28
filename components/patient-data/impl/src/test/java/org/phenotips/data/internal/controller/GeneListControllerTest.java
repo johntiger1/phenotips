@@ -18,7 +18,6 @@
 package org.phenotips.data.internal.controller;
 
 import org.phenotips.components.ComponentManagerRegistry;
-import org.phenotips.data.Gene;
 import org.phenotips.data.IndexedPatientData;
 import org.phenotips.data.Patient;
 import org.phenotips.data.PatientData;
@@ -32,7 +31,6 @@ import org.xwiki.component.manager.ComponentLookupException;
 import org.xwiki.component.manager.ComponentManager;
 import org.xwiki.component.util.ReflectionUtils;
 import org.xwiki.model.reference.DocumentReference;
-import org.xwiki.model.reference.DocumentReferenceResolver;
 import org.xwiki.model.reference.EntityReference;
 import org.xwiki.test.mockito.MockitoComponentMockingRule;
 
@@ -51,6 +49,7 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
+import org.mockito.Matchers;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
@@ -133,9 +132,6 @@ public class GeneListControllerTest
     private VocabularyManager vm;
 
     @Mock
-    private DocumentReferenceResolver<EntityReference> resolver;
-
-    @Mock
     private XWiki xwiki;
 
     @Mock
@@ -161,20 +157,19 @@ public class GeneListControllerTest
         when(this.mockProvider.get()).thenReturn(this.cm);
         when(this.cm.getInstance(VocabularyManager.class)).thenReturn(this.vm);
 
-        when(this.cm.getInstance(DocumentReferenceResolver.TYPE_REFERENCE, "current")).thenReturn(this.resolver);
-
         when(this.cm.getInstance(XWikiContext.TYPE_PROVIDER)).thenReturn(this.provider);
         XWikiContext context = mock(XWikiContext.class);
         when(this.provider.get()).thenReturn(context);
         XWiki x = mock(XWiki.class);
         when(context.getWiki()).thenReturn(x);
 
-        XWikiDocument geneDoc = mock(XWikiDocument.class);
+        DocumentReference geneDocRef = new DocumentReference("wiki", "PhenoTips", "GeneClass");
+        XWikiDocument geneDoc = new XWikiDocument(geneDocRef);
+        when(Matchers.any(PhenoTipsGene.class).getGeneDoc()).thenReturn(geneDoc);
         geneDoc.setNew(false);
-        when(this.xwiki.getDocument(Gene.GENE_CLASS, context)).thenReturn(geneDoc);
-        // when(geneDoc == null).thenReturn(false);
+        XWikiDocument spy = Mockito.spy(geneDoc);
         BaseClass c = mock(BaseClass.class);
-        when(geneDoc.getXClass()).thenReturn(c);
+        when(spy.getXClass()).thenReturn(c);
         StaticListClass lc1 = mock(StaticListClass.class);
         StaticListClass lc2 = mock(StaticListClass.class);
         when(c.get(STATUS_KEY)).thenReturn(lc1);
