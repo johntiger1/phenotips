@@ -547,6 +547,30 @@
               <method>boolean isDisabled()</method>
               <justification>New methods in support of disabled visibilities.</justification>
             </difference>
+            <difference>
+              <className>org/phenotips/vocabulary/SolrVocabularyResourceManager</className>
+              <differenceType>7012</differenceType>
+              <method>void createReplacementCore(java.lang.String)</method>
+              <justification>New methods for safe vocabulary reindexing.</justification>
+            </difference>
+            <difference>
+              <className>org/phenotips/vocabulary/SolrVocabularyResourceManager</className>
+              <differenceType>7012</differenceType>
+              <method>void replaceCore(java.lang.String)</method>
+              <justification>New methods for safe vocabulary reindexing.</justification>
+            </difference>
+            <difference>
+              <className>org/phenotips/vocabulary/SolrVocabularyResourceManager</className>
+              <differenceType>7012</differenceType>
+              <method>org.apache.solr.client.solrj.SolrClient getReplacementSolrConnection(java.lang.String)</method>
+              <justification>New methods for safe vocabulary reindexing.</justification>
+            </difference>
+            <difference>
+              <className>org/phenotips/vocabulary/SolrVocabularyResourceManager</className>
+              <differenceType>7012</differenceType>
+              <method>void discardReplacementCore(java.lang.String)</method>
+              <justification>New methods for safe vocabulary reindexing.</justification>
+            </difference>
 
             <difference>
               <className>**</className>
