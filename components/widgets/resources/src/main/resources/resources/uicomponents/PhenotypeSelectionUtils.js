@@ -41,7 +41,7 @@ define("PhenotypeSelectionUtils", [], function() {
            return null;
         }
         var id = phenotype.id;
-        var searchUrl = new XWiki.Document('SolrService', 'PhenoTips').getURL("get", "q=" + id);
+        var searchUrl = new XWiki.Document('SolrService', 'PhenoTips').getURL("get", "category=phenotype&q=" + id);
         new Ajax.Request(searchUrl, {
           method: 'get',
           onSuccess: function(transport) {

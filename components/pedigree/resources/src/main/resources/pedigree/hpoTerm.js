@@ -75,7 +75,7 @@ define([
     }
 
     HPOTerm.getServiceURL = function() {
-        return editor.getExternalEndpoint().getSolrServiceURL() + "?";
+        return editor.getExternalEndpoint().getSolrServiceURL() + "?category=phenotype&";
     }
     return HPOTerm;
 });

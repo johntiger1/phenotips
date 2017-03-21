@@ -42,14 +42,16 @@
   #set ($results = [])
   #if ("$!{request.q}" != '')
     #set ($vocabulary = "$!{request.vocabulary}")
-    #if ($vocabulary == '')
-      #set ($vocabulary = 'hpo')
-    #end
+    #set ($category = "$!{request.category}")
     #set ($rows = 10)
     #if ("$!{request.rows}" != '')
       #set ($rows = $numbertool.toNumber($!{request.rows}))
     #end
-    #set ($results = $services.vocabularies.get($vocabulary).search($!{request.q}, $rows, "$!{request.sort}", "$!{request.fq}"))
+    #if ($vocabulary != '' &amp;&amp; $category != '')
+      #set ($results = $services.vocabularies.get($vocabulary).search($!{request.q}, $category, $rows, "$!{request.sort}", "$!{request.fq}"))
+    #elseif ($category != '')
+      #set ($results = $services.vocabularies.search($!{request.q}, $category, $rows))
+    #end
   #end
 $response.setContentType('application/json')
 {

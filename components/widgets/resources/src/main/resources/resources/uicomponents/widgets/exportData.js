@@ -1,7 +1,7 @@
 document.observe('xwiki:dom:loading', function() {
   var suggestionsMapping = {
         "hpo" : {
-            script: new XWiki.Document('SolrService', 'PhenoTips').getURL("get") + "?",
+            script: new XWiki.Document('SolrService', 'PhenoTips').getURL("get", "category=phenotype") + "&",
             varname: "q",
             noresults: "$services.localization.render('phenotips.DBWebHomeSheet.noResults')",
             json: true,
@@ -18,7 +18,7 @@ document.observe('xwiki:dom:loading', function() {
             timeout : 30000
         },
         "ordo" : {
-            script: new XWiki.Document('SolrService', 'PhenoTips').getURL("get", "vocabulary=ordo") + "&",
+            script: new XWiki.Document('SolrService', 'PhenoTips').getURL("get", "vocabulary=ordo&category=disease") + "&",
             varname: "q",
             noresults: "$services.localization.render('phenotips.DBWebHomeSheet.noResults')",
             json: true,
@@ -31,7 +31,7 @@ document.observe('xwiki:dom:loading', function() {
             timeout : 30000
         },
         "omim" : {
-            script: new XWiki.Document('SolrService', 'PhenoTips').getURL("get", "vocabulary=omim") + "&",
+            script: new XWiki.Document('SolrService', 'PhenoTips').getURL("get", "vocabulary=omim&category=disease") + "&",
             varname: "q",
             noresults: "$services.localization.render('phenotips.DBWebHomeSheet.noResults')",
             json: true,

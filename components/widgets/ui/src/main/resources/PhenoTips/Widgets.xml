@@ -2596,7 +2596,7 @@ return PhenoTips;
   var widgets = PhenoTips.widgets = PhenoTips.widgets || {};
   widgets.OntologyBrowser = Class.create({
   options : {
-    script : "${xwiki.getURL('PhenoTips.SolrService', 'get', 'sort=nameSort asc&amp;start=0&amp;rows=10000')}&amp;",
+    script : "${xwiki.getURL('PhenoTips.SolrService', 'get', 'vocabulary=hpo&amp;sort=nameSort asc&amp;start=0&amp;rows=10000')}&amp;",
     varname: "q",
     method : "post",
     json : true,
