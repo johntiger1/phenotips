@@ -95,7 +95,7 @@ public class DefaultVocabularyManager implements VocabularyManager, Initializabl
         for (final Vocabulary vocabulary : this.vocabularies.values()) {
             final Collection<String> supportedCategories = vocabulary.getSupportedCategories();
             for (final String category : supportedCategories) {
-                final Set<Vocabulary> vocabularySet = getVocabSetForCategory(category, categorisedVocabularies);
+                final Set<Vocabulary> vocabularySet = generateVocabSetForCategory(category, categorisedVocabularies);
                 vocabularySet.add(vocabulary);
             }
         }
@@ -111,7 +111,7 @@ public class DefaultVocabularyManager implements VocabularyManager, Initializabl
      * @param categorisedVocabularies the available vocabularies, stored under their respective categories
      * @return a {@link Set<Vocabulary>} objects associated with the given {@code category}
      */
-    private Set<Vocabulary> getVocabSetForCategory(@Nonnull final String category,
+    private Set<Vocabulary> generateVocabSetForCategory(@Nonnull final String category,
         @Nonnull Map<String, Set<Vocabulary>> categorisedVocabularies)
     {
         if (categorisedVocabularies.containsKey(category)) {
@@ -139,9 +139,24 @@ public class DefaultVocabularyManager implements VocabularyManager, Initializabl
     }
 
     @Override
+    public Set<Vocabulary> getVocabularies(final String category)
+    {
+        if (!this.vocabulariesByCategory.containsKey(category)) {
+            return Collections.emptySet();
+        }
+        return Collections.unmodifiableSet(this.vocabulariesByCategory.get(category));
+    }
+
+    @Override
     public List<String> getAvailableVocabularies()
     {
         return new ArrayList<>(this.vocabularies.keySet());
+    }
+
+    @Override
+    public List<String> getAvailableCategories()
+    {
+        return new ArrayList<>(this.vocabulariesByCategory.keySet());
     }
 
     @Override

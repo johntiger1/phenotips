@@ -473,6 +473,30 @@
               <justification>New method for getting all the vocabularies; it's esential for a Manager to be able to say what it manages.</justification>
             </difference>
             <difference>
+              <className>org/phenotips/vocabulary/VocabularyManager</className>
+              <differenceType>7012</differenceType>
+              <method>java.util.List search(java.lang.String, java.lang.String, int)</method>
+              <justification>Adding support for searches in vocabulary category</justification>
+            </difference>
+            <difference>
+              <className>org/phenotips/vocabulary/VocabularyManager</className>
+              <differenceType>7012</differenceType>
+              <method>java.util.List search(java.lang.String, java.lang.String, int, java.lang.String, java.lang.String)</method>
+              <justification>Adding support for searches in vocabulary category</justification>
+            </difference>
+            <difference>
+              <className>org/phenotips/vocabulary/VocabularyManager</className>
+              <differenceType>7012</differenceType>
+              <method>java.util.List getAvailableCategories()</method>
+              <justification>New method to get a list of all available vocabulary categories.</justification>
+            </difference>
+            <difference>
+              <className>org/phenotips/vocabulary/VocabularyManager</className>
+              <differenceType>7012</differenceType>
+              <method>java.util.Set getVocabularies(java.lang.String)</method>
+              <justification>New method to get a list of all vocabularies that fall under some category.</justification>
+            </difference>
+            <difference>
               <className>org/phenotips/vocabulary/Vocabulary</className>
               <differenceType>7012</differenceType>
               <method>java.lang.String getIdentifier()</method>

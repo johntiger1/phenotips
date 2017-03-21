@@ -17,15 +17,29 @@
  */
 package org.phenotips.vocabularies.rest.internal;
 
+import org.phenotips.rest.Autolinker;
+import org.phenotips.vocabularies.rest.CategoryResource;
+import org.phenotips.vocabularies.rest.CategoryTermSuggestionsResource;
 import org.phenotips.vocabularies.rest.DomainObjectFactory;
+import org.phenotips.vocabularies.rest.VocabularyResource;
+import org.phenotips.vocabularies.rest.VocabularyTermSuggestionsResource;
+import org.phenotips.vocabularies.rest.model.Category;
 import org.phenotips.vocabularies.rest.model.VocabularyTermSummary;
 import org.phenotips.vocabulary.Vocabulary;
 import org.phenotips.vocabulary.VocabularyTerm;
 
 import org.xwiki.component.annotation.Component;
+import org.xwiki.security.authorization.Right;
 import org.xwiki.stability.Unstable;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.Set;
+
+import javax.annotation.Nonnull;
 import javax.inject.Singleton;
+import javax.ws.rs.core.UriInfo;
 
 import org.json.JSONObject;
 
@@ -38,6 +52,10 @@ import org.json.JSONObject;
 @Singleton
 public class DefaultDomainObjectFactory implements DomainObjectFactory
 {
+    private static final String CATEGORY_LABEL = "category";
+
+    private static final String VOCABULARY_ID_LABEL = "vocabulary-id";
+
     @Override
     public org.phenotips.vocabularies.rest.model.Vocabulary createVocabularyRepresentation(Vocabulary vocabulary)
     {
@@ -71,4 +89,53 @@ public class DefaultDomainObjectFactory implements DomainObjectFactory
         rep.withDescription(term.getDescription());
         return rep;
     }
+
+    @Override
+    public Category createCategoryRepresentation(@Nonnull final String category)
+    {
+        final Category categoryRep = new Category();
+        categoryRep.withCategory(category);
+        return categoryRep;
+    }
+
+    @Override
+    public List<Category> createCategoriesList(
+        @Nonnull final Collection<String> categoryIds,
+        @Nonnull final Autolinker autolinker,
+        @Nonnull final UriInfo uriInfo,
+        final boolean userIsAdmin)
+    {
+        final List<Category> reps = new ArrayList<>();
+        for (final String categoryId : categoryIds) {
+            final Category category = createCategoryRepresentation(categoryId);
+            category.withLinks(autolinker.forSecondaryResource(CategoryResource.class, uriInfo)
+                .withActionableResources(CategoryTermSuggestionsResource.class)
+                .withExtraParameters(CATEGORY_LABEL, categoryId)
+                .withGrantedRight(userIsAdmin ? Right.ADMIN : Right.VIEW)
+                .build());
+            reps.add(category);
+        }
+        return reps;
+    }
+
+    @Override
+    public List<org.phenotips.vocabularies.rest.model.Vocabulary> createVocabulariesList(
+        @Nonnull final Set<Vocabulary> vocabularies,
+        @Nonnull final Autolinker autolinker,
+        @Nonnull final UriInfo uriInfo,
+        final boolean userIsAdmin)
+    {
+        final List<org.phenotips.vocabularies.rest.model.Vocabulary> reps = new ArrayList<>();
+        for (final Vocabulary vocabulary : vocabularies) {
+            final org.phenotips.vocabularies.rest.model.Vocabulary rep = createVocabularyRepresentation(vocabulary);
+            rep.withLinks(autolinker.forSecondaryResource(VocabularyResource.class, uriInfo)
+                .withActionableResources(VocabularyTermSuggestionsResource.class)
+                .withExtraParameters(VOCABULARY_ID_LABEL, vocabulary.getIdentifier())
+                .withGrantedRight(userIsAdmin ? Right.ADMIN : Right.VIEW)
+                .build());
+            reps.add(rep);
+        }
+        return reps;
+    }
+
 }
