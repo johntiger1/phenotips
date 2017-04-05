@@ -77,18 +77,10 @@ public class ConversionHelpers
             translationManager = ComponentManagerRegistry.getContextComponentManager().getInstance(
                 TranslationManager.class);
         } catch (ComponentLookupException ex) {
-            LoggerFactory.getLogger(ConversionHelpers.class).warn("Failed to lookup TranslationManager component: [{}]",
+            LoggerFactory.getLogger(ConversionHelpers.class).warn(
+                "Failed to lookup TranslationManager component: [{}]",
                 ex.getMessage());
         }
-    }
-
-    /**
-     * Clears the {@link #sectionFeatureTree} and must be called before processing each patient, as each patient has a
-     * different set of phenotypes.
-     */
-    public void newPatient()
-    {
-        this.sectionFeatureTree = new HashMap<>();
     }
 
     /**
@@ -100,6 +92,7 @@ public class ConversionHelpers
      * @throws java.lang.Exception Could happen if the {@link org.phenotips.vocabulary.Vocabulary} for HPO could not be
      *             accessed or is the phenotype category list is not available
      */
+    @SuppressWarnings("unchecked")
     public void featureSetUp(Boolean positive, Boolean negative, Boolean mapCategories) throws Exception
     {
         /* Set to true to include, and false to not include phenotypes with positive/negative status. */
@@ -119,10 +112,23 @@ public class ConversionHelpers
         Object mappingObject = mappingService.get("phenotype");
         if (mappingObject instanceof List) {
             @SuppressWarnings("unchecked")
-            List<Map<String, List<String>>> mapping = (List<Map<String, List<String>>>) mappingObject;
+            List<Map<String, Object>> mapping = (List<Map<String, Object>>) mappingObject;
             this.categoryMapping = new LinkedHashMap<>();
-            for (Map<String, List<String>> categoryEntry : mapping) {
-                this.categoryMapping.put(categoryEntry.get("title").toString(), categoryEntry.get("categories"));
+            for (Map<String, Object> categoryEntry : mapping) {
+                List<String> categories = (List<String>) categoryEntry.get("categories");
+
+                // adding all subcategories IDs to categories list
+                Object subCategoriesObject = categoryEntry.get("data");
+                if (subCategoriesObject instanceof List) {
+                    List<Map<String, Object>> subCategories = (List<Map<String, Object>>) subCategoriesObject;
+                    for (Map<String, Object> subCategoryEntry : subCategories) {
+                        if (subCategoryEntry.containsKey("id")) {
+                            categories.add(subCategoryEntry.get("id").toString());
+                        }
+                    }
+                }
+
+                this.categoryMapping.put(categoryEntry.get("title").toString(), categories);
             }
         } else {
             throw new Exception("The phenotype category list is not available");
@@ -181,6 +187,7 @@ public class ConversionHelpers
      */
     public List<Feature> sortFeaturesWithSections(Set<? extends Feature> features)
     {
+        this.sectionFeatureTree = new HashMap<>();
         List<Feature> positiveList = sortFeaturesBySection(filterFeaturesByPresentStatus(features, true));
         List<Feature> negativeList = sortFeaturesBySection(filterFeaturesByPresentStatus(features, false));
 
@@ -211,8 +218,7 @@ public class ConversionHelpers
                 Iterator<Feature> iter = features.iterator();
                 while (iter.hasNext()) {
                     Feature feature = iter.next();
-                    if (getCategoriesFromOntology(feature.getId()).contains(category)
-                        || StringUtils.equals(feature.getId(), category)) {
+                    if (getCategoriesFromOntology(feature.getId()).contains(category)) {
                         this.sectionFeatureTree.put(feature.getId(), section);
                         sortedFeatures.add(feature);
                         iter.remove();

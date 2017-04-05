@@ -29,7 +29,7 @@
   <name>PhenoTips - Data export - Spreadsheet Export APIs</name>
 
   <properties>
-    <coverage.instructionRatio>0.18</coverage.instructionRatio>
+    <coverage.instructionRatio>0.17</coverage.instructionRatio>
     <checkstyle.suppressions.location>${basedir}/src/checkstyle/checkstyle-suppressions.xml</checkstyle.suppressions.location>
   </properties>
 
@@ -97,6 +97,10 @@
       <groupId>${project.groupId}</groupId>
       <artifactId>xwiki-translation-manager</artifactId>
       <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.json</groupId>
+      <artifactId>json</artifactId>
     </dependency>
     <dependency>
       <groupId>org.slf4j</groupId>
