@@ -121,6 +121,24 @@ public class OncoTreeTest
 
     private static final String ONCO_UPPER = "ONCO";
 
+    private static final String TISSUE = "tissue";
+
+    private static final String ID = "id";
+
+    private static final String NAME = "name";
+
+    private static final String TERM_GROUP = "term_group";
+
+    private static final String COLOUR = "colour";
+
+    private static final String NCI_ID = "nci_id";
+
+    private static final String UMLS_ID = "umls_id";
+
+    private static final String IS_A = "is_a";
+
+    private static final String TERM_CATEGORY = "term_category";
+
     @Rule
     public MockitoComponentMockingRule<Vocabulary> mocker = new MockitoComponentMockingRule<Vocabulary>(OncoTree.class);
 
@@ -206,81 +224,81 @@ public class OncoTreeTest
 
         SolrInputDocument datum = iterator.next();
         Assert.assertEquals(7, datum.size());
-        Assert.assertEquals(ADRENAL_GLAND_LABEL, datum.getFieldValue(OncoTreeUtils.TISSUE));
-        Assert.assertEquals(PREFIX + ACA_LABEL, datum.getFieldValue(OncoTreeUtils.ID));
-        Assert.assertEquals(ACA_NAME_LABEL, datum.getFieldValue(OncoTreeUtils.NAME));
-        Assert.assertEquals(ADRENOCORTICAL_CARCINOMA_LABEL, datum.getFieldValue(OncoTreeUtils.TERM_GROUP));
-        Assert.assertEquals(PURPLE_LABEL, datum.getFieldValue(OncoTreeUtils.COLOUR));
-        Assert.assertEquals("C9003", datum.getFieldValue(OncoTreeUtils.NCI_ID));
-        Assert.assertEquals("C0206667", datum.getFieldValue(OncoTreeUtils.UMLS_ID));
+        Assert.assertEquals(ADRENAL_GLAND_LABEL, datum.getFieldValue(TISSUE));
+        Assert.assertEquals(PREFIX + ACA_LABEL, datum.getFieldValue(ID));
+        Assert.assertEquals(ACA_NAME_LABEL, datum.getFieldValue(NAME));
+        Assert.assertEquals(ADRENOCORTICAL_CARCINOMA_LABEL, datum.getFieldValue(TERM_GROUP));
+        Assert.assertEquals(PURPLE_LABEL, datum.getFieldValue(COLOUR));
+        Assert.assertEquals("C9003", datum.getFieldValue(NCI_ID));
+        Assert.assertEquals("C0206667", datum.getFieldValue(UMLS_ID));
 
         datum = iterator.next();
         Assert.assertEquals(7, datum.size());
-        Assert.assertEquals(ESOPHAGUS_STOMACH_LABEL, datum.getFieldValue(OncoTreeUtils.TISSUE));
-        Assert.assertEquals(PREFIX + EGC_LABEL, datum.getFieldValue(OncoTreeUtils.ID));
-        Assert.assertEquals(EGC_NAME_LABEL, datum.getFieldValue(OncoTreeUtils.NAME));
-        Assert.assertEquals(ESOPHAGOGASTRIC_CANCER_LABEL, datum.getFieldValue(OncoTreeUtils.TERM_GROUP));
-        Assert.assertEquals(BLUE_LABEL, datum.getFieldValue(OncoTreeUtils.COLOUR));
-        Assert.assertEquals("C9296", datum.getFieldValue(OncoTreeUtils.NCI_ID));
-        Assert.assertEquals("C1332166", datum.getFieldValue(OncoTreeUtils.UMLS_ID));
+        Assert.assertEquals(ESOPHAGUS_STOMACH_LABEL, datum.getFieldValue(TISSUE));
+        Assert.assertEquals(PREFIX + EGC_LABEL, datum.getFieldValue(ID));
+        Assert.assertEquals(EGC_NAME_LABEL, datum.getFieldValue(NAME));
+        Assert.assertEquals(ESOPHAGOGASTRIC_CANCER_LABEL, datum.getFieldValue(TERM_GROUP));
+        Assert.assertEquals(BLUE_LABEL, datum.getFieldValue(COLOUR));
+        Assert.assertEquals("C9296", datum.getFieldValue(NCI_ID));
+        Assert.assertEquals("C1332166", datum.getFieldValue(UMLS_ID));
 
         datum = iterator.next();
         Assert.assertEquals(9, datum.size());
-        Assert.assertEquals(ESOPHAGUS_STOMACH_LABEL, datum.getFieldValue(OncoTreeUtils.TISSUE));
-        Assert.assertEquals(PREFIX + STAD_LABEL, datum.getFieldValue(OncoTreeUtils.ID));
-        Assert.assertEquals(STAD_NAME_LABEL, datum.getFieldValue(OncoTreeUtils.NAME));
-        Assert.assertEquals(ESOPHAGOGASTRIC_CANCER_LABEL, datum.getFieldValue(OncoTreeUtils.TERM_GROUP));
-        Assert.assertEquals(BLUE_LABEL, datum.getFieldValue(OncoTreeUtils.COLOUR));
-        Assert.assertEquals("C4004", datum.getFieldValue(OncoTreeUtils.NCI_ID));
-        Assert.assertEquals("C0278701", datum.getFieldValue(OncoTreeUtils.UMLS_ID));
-        Assert.assertEquals(PREFIX + EGC_LABEL, datum.getFieldValue(OncoTreeUtils.IS_A));
+        Assert.assertEquals(ESOPHAGUS_STOMACH_LABEL, datum.getFieldValue(TISSUE));
+        Assert.assertEquals(PREFIX + STAD_LABEL, datum.getFieldValue(ID));
+        Assert.assertEquals(STAD_NAME_LABEL, datum.getFieldValue(NAME));
+        Assert.assertEquals(ESOPHAGOGASTRIC_CANCER_LABEL, datum.getFieldValue(TERM_GROUP));
+        Assert.assertEquals(BLUE_LABEL, datum.getFieldValue(COLOUR));
+        Assert.assertEquals("C4004", datum.getFieldValue(NCI_ID));
+        Assert.assertEquals("C0278701", datum.getFieldValue(UMLS_ID));
+        Assert.assertEquals(PREFIX + EGC_LABEL, datum.getFieldValue(IS_A));
         Assert.assertEquals(Collections.singletonList(PREFIX + EGC_LABEL),
-            datum.getFieldValues(OncoTreeUtils.TERM_CATEGORY));
+            datum.getFieldValues(TERM_CATEGORY));
 
         datum = iterator.next();
         Assert.assertEquals(9, datum.size());
-        Assert.assertEquals(ESOPHAGUS_STOMACH_LABEL, datum.getFieldValue(OncoTreeUtils.TISSUE));
-        Assert.assertEquals(PREFIX + DSTAD_LABEL, datum.getFieldValue(OncoTreeUtils.ID));
-        Assert.assertEquals(DSTAD_NAME_LABEL, datum.getFieldValue(OncoTreeUtils.NAME));
-        Assert.assertEquals(ESOPHAGOGASTRIC_CANCER_LABEL, datum.getFieldValue(OncoTreeUtils.TERM_GROUP));
-        Assert.assertEquals(BLUE_LABEL, datum.getFieldValue(OncoTreeUtils.COLOUR));
-        Assert.assertEquals("C9159", datum.getFieldValue(OncoTreeUtils.NCI_ID));
-        Assert.assertEquals("C0279635", datum.getFieldValue(OncoTreeUtils.UMLS_ID));
-        Assert.assertEquals(PREFIX + STAD_LABEL, datum.getFieldValue(OncoTreeUtils.IS_A));
+        Assert.assertEquals(ESOPHAGUS_STOMACH_LABEL, datum.getFieldValue(TISSUE));
+        Assert.assertEquals(PREFIX + DSTAD_LABEL, datum.getFieldValue(ID));
+        Assert.assertEquals(DSTAD_NAME_LABEL, datum.getFieldValue(NAME));
+        Assert.assertEquals(ESOPHAGOGASTRIC_CANCER_LABEL, datum.getFieldValue(TERM_GROUP));
+        Assert.assertEquals(BLUE_LABEL, datum.getFieldValue(COLOUR));
+        Assert.assertEquals("C9159", datum.getFieldValue(NCI_ID));
+        Assert.assertEquals("C0279635", datum.getFieldValue(UMLS_ID));
+        Assert.assertEquals(PREFIX + STAD_LABEL, datum.getFieldValue(IS_A));
         Assert.assertEquals(Arrays.asList(PREFIX + EGC_LABEL, PREFIX + STAD_LABEL),
-            datum.getFieldValues(OncoTreeUtils.TERM_CATEGORY));
+            datum.getFieldValues(TERM_CATEGORY));
 
         datum = iterator.next();
         Assert.assertEquals(7, datum.size());
-        Assert.assertEquals(THYMUS_LABEL, datum.getFieldValue(OncoTreeUtils.TISSUE));
-        Assert.assertEquals(PREFIX + TET_LABEL, datum.getFieldValue(OncoTreeUtils.ID));
-        Assert.assertEquals(TET_NAME_LABEL, datum.getFieldValue(OncoTreeUtils.NAME));
-        Assert.assertEquals(THYMIC_TUMOR_LABEL, datum.getFieldValue(OncoTreeUtils.TERM_GROUP));
-        Assert.assertEquals(PURPLE_LABEL, datum.getFieldValue(OncoTreeUtils.COLOUR));
-        Assert.assertEquals("C6450", datum.getFieldValue(OncoTreeUtils.NCI_ID));
-        Assert.assertEquals("C1266101", datum.getFieldValue(OncoTreeUtils.UMLS_ID));
+        Assert.assertEquals(THYMUS_LABEL, datum.getFieldValue(TISSUE));
+        Assert.assertEquals(PREFIX + TET_LABEL, datum.getFieldValue(ID));
+        Assert.assertEquals(TET_NAME_LABEL, datum.getFieldValue(NAME));
+        Assert.assertEquals(THYMIC_TUMOR_LABEL, datum.getFieldValue(TERM_GROUP));
+        Assert.assertEquals(PURPLE_LABEL, datum.getFieldValue(COLOUR));
+        Assert.assertEquals("C6450", datum.getFieldValue(NCI_ID));
+        Assert.assertEquals("C1266101", datum.getFieldValue(UMLS_ID));
 
         datum = iterator.next();
         Assert.assertEquals(9, datum.size());
-        Assert.assertEquals(THYMUS_LABEL, datum.getFieldValue(OncoTreeUtils.TISSUE));
-        Assert.assertEquals(PREFIX + THYC_LABEL, datum.getFieldValue(OncoTreeUtils.ID));
-        Assert.assertEquals(THYC_NAME_LABEL, datum.getFieldValue(OncoTreeUtils.NAME));
-        Assert.assertEquals(THYMIC_TUMOR_LABEL, datum.getFieldValue(OncoTreeUtils.TERM_GROUP));
-        Assert.assertEquals(PURPLE_LABEL, datum.getFieldValue(OncoTreeUtils.COLOUR));
-        Assert.assertEquals("C7569", datum.getFieldValue(OncoTreeUtils.NCI_ID));
-        Assert.assertEquals("C0205969", datum.getFieldValue(OncoTreeUtils.UMLS_ID));
-        Assert.assertEquals(PREFIX + TET_LABEL, datum.getFieldValue(OncoTreeUtils.IS_A));
+        Assert.assertEquals(THYMUS_LABEL, datum.getFieldValue(TISSUE));
+        Assert.assertEquals(PREFIX + THYC_LABEL, datum.getFieldValue(ID));
+        Assert.assertEquals(THYC_NAME_LABEL, datum.getFieldValue(NAME));
+        Assert.assertEquals(THYMIC_TUMOR_LABEL, datum.getFieldValue(TERM_GROUP));
+        Assert.assertEquals(PURPLE_LABEL, datum.getFieldValue(COLOUR));
+        Assert.assertEquals("C7569", datum.getFieldValue(NCI_ID));
+        Assert.assertEquals("C0205969", datum.getFieldValue(UMLS_ID));
+        Assert.assertEquals(PREFIX + TET_LABEL, datum.getFieldValue(IS_A));
         Assert.assertEquals(Collections.singletonList(PREFIX + TET_LABEL),
-            datum.getFieldValues(OncoTreeUtils.TERM_CATEGORY));
+            datum.getFieldValues(TERM_CATEGORY));
 
         datum = iterator.next();
         Assert.assertEquals(6, datum.size());
-        Assert.assertEquals(THYMUS_LABEL, datum.getFieldValue(OncoTreeUtils.TISSUE));
-        Assert.assertEquals(PREFIX + TNET_LABEL, datum.getFieldValue(OncoTreeUtils.ID));
-        Assert.assertEquals(TNET_NAME_LABEL, datum.getFieldValue(OncoTreeUtils.NAME));
-        Assert.assertEquals(THYMIC_TUMOR_LABEL, datum.getFieldValue(OncoTreeUtils.TERM_GROUP));
-        Assert.assertEquals(PURPLE_LABEL, datum.getFieldValue(OncoTreeUtils.COLOUR));
-        Assert.assertEquals("CL511204", datum.getFieldValue(OncoTreeUtils.UMLS_ID));
+        Assert.assertEquals(THYMUS_LABEL, datum.getFieldValue(TISSUE));
+        Assert.assertEquals(PREFIX + TNET_LABEL, datum.getFieldValue(ID));
+        Assert.assertEquals(TNET_NAME_LABEL, datum.getFieldValue(NAME));
+        Assert.assertEquals(THYMIC_TUMOR_LABEL, datum.getFieldValue(TERM_GROUP));
+        Assert.assertEquals(PURPLE_LABEL, datum.getFieldValue(COLOUR));
+        Assert.assertEquals("CL511204", datum.getFieldValue(UMLS_ID));
     }
 
     @Test

@@ -29,7 +29,7 @@
   <name>PhenoTips - Vocabularies - OncoTree integration - APIs</name>
 
   <properties>
-    <coverage.instructionRatio>0.57</coverage.instructionRatio>
+    <coverage.instructionRatio>0.47</coverage.instructionRatio>
   </properties>
 
   <dependencies>
@@ -46,6 +46,17 @@
       <groupId>${project.groupId}</groupId>
       <artifactId>vocabularies-api</artifactId>
       <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.solr</groupId>
+      <artifactId>solr-solrj</artifactId>
+      <version>${solr.version}</version>
+      <exclusions>
+        <exclusion>
+          <groupId>log4j</groupId>
+          <artifactId>log4j</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
     <!-- Test dependencies -->
     <!-- Unused import. Left in here since, in an ideal world there should be some tests -->

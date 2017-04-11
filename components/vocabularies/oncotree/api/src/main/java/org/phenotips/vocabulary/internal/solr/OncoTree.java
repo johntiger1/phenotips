@@ -18,7 +18,6 @@
 package org.phenotips.vocabulary.internal.solr;
 
 import org.phenotips.vocabulary.VocabularyTerm;
-import org.phenotips.vocabulary.internal.solr.strategies.OncoTreePropertyWriteStrategy;
 
 import org.xwiki.component.annotation.Component;
 
@@ -67,20 +66,39 @@ public class OncoTree extends AbstractCSVSolrVocabulary
     /** The default location of the OncoTree data file. */
     private static final String SOURCE = "http://oncotree.mskcc.org/oncotree/api/tumor_types.txt";
 
-    /** A picker for {@link OncoTreePropertyWriteStrategy} objects. */
-    private static final OncoTreePropertyWriteStrategyPicker STRATEGIES = new OncoTreePropertyWriteStrategyPicker();
+    private static final String CANCER = "cancer";
+
+    private static final String TISSUE = "tissue";
+
+    private static final String TERM_GROUP = "term_group";
+
+    private static final String COLOUR = "colour";
+
+    private static final String NCI_ID = "nci_id";
+
+    private static final String UMLS_ID = "umls_id";
+
+    private static final String IS_A = "is_a";
+
+    private static final String TERM_CATEGORY = "term_category";
+
+    private static final String ID = "id";
+
+    private static final String NAME = "name";
+
+    private static final String SEPARATOR = ":";
 
     /** Column labels for the tab-separated cancers file. */
     private static final String[] COLUMNS = {
-        OncoTreeUtils.TISSUE,
-        OncoTreeUtils.CANCER + "1",
-        OncoTreeUtils.CANCER + "2",
-        OncoTreeUtils.CANCER + "3",
-        OncoTreeUtils.CANCER + "4",
-        OncoTreeUtils.TERM_GROUP,
-        OncoTreeUtils.COLOUR,
-        OncoTreeUtils.NCI_ID,
-        OncoTreeUtils.UMLS_ID
+        TISSUE,
+        CANCER + "1",
+        CANCER + "2",
+        CANCER + "3",
+        CANCER + "4",
+        TERM_GROUP,
+        COLOUR,
+        NCI_ID,
+        UMLS_ID
     };
 
     @Override
@@ -128,31 +146,94 @@ public class OncoTree extends AbstractCSVSolrVocabulary
     private void processDataRow(@Nonnull final CSVRecord row, @Nonnull final Collection<SolrInputDocument> data)
     {
         final SolrInputDocument doc = new SolrInputDocument();
-
         for (int i = 0; i < row.size(); i++) {
-            final String label = COLUMNS[i];
             final String value = row.get(i);
-            applyWriteStrategies(doc, label, value);
+            if (StringUtils.isNotBlank(value)) {
+                if (i == 0) {
+                    processTissue(doc, COLUMNS[i], value);
+                } else if (i < 5) {
+                    processName(doc, value);
+                } else {
+                    doc.addField(COLUMNS[i], value);
+                }
+            }
         }
         data.add(doc);
     }
 
     /**
-     * Writes the {@code label} and {@code value} data into the {@code doc}, as per some predefined write strategies.
+     * Processes the {@code value cancer name value}, and writes the extracted identifier and name information into
+     * {@code doc}.
      *
-     * @param doc the {@link SolrInputDocument} where the data will be written
-     * @param label the property label
-     * @param value the property value
+     * @param doc the {@link SolrInputDocument} into which data is written
+     * @param value the provided raw cancer name
      */
-    private void applyWriteStrategies(
-        @Nonnull final SolrInputDocument doc,
-        @Nonnull final String label,
-        @Nullable final String value)
+    private void processName(@Nonnull final SolrInputDocument doc, @Nonnull final String value)
     {
-        final Collection<OncoTreePropertyWriteStrategy> strategies = STRATEGIES.get(label);
-        for (final OncoTreePropertyWriteStrategy strategy : strategies) {
-            strategy.execute(doc, label, value);
+        updateParents(doc);
+        updateCancerId(doc, value);
+        updateCancerName(doc, value);
+    }
+
+    /**
+     * Tries to extract the name of the cancer from the provided raw {@code value name} string, and writes it into
+     * {@code doc}.
+     *
+     * @param doc the {@link SolrInputDocument} into which data is written
+     * @param value the provided raw cancer name
+     */
+    private void updateCancerName(@Nonnull final SolrInputDocument doc, @Nonnull final String value)
+    {
+        final String name = StringUtils.substringBefore(value, "(").trim();
+        doc.setField(NAME, name);
+    }
+
+    /**
+     * Tries to extract the cancer identifier from the provided raw {@code value name} string, and writes it into
+     * {@code doc}. If no ID can be extracted, the raw value is written as is.
+     *
+     * @param doc the {@link SolrInputDocument} into which data is written
+     * @param value the provided raw cancer name
+     */
+    private void updateCancerId(@Nonnull final SolrInputDocument doc, @Nonnull final String value)
+    {
+        final String id = StringUtils.substringBetween(value, "(", ")").trim();
+        if (StringUtils.isNotBlank(id)) {
+            doc.setField(ID, getTermPrefix() + SEPARATOR + id);
+        } else {
+            this.logger.warn("No identifier could be extracted from the provided cancer name: {}", value);
+            doc.setField(ID, getTermPrefix() + SEPARATOR + value);
         }
+    }
+
+    /**
+     * Updates the parents of the cancer that is currently being processed.
+     *
+     * @param doc the {@link SolrInputDocument} into which data is written
+     */
+    private void updateParents(@Nonnull final SolrInputDocument doc)
+    {
+        final String prevId = (String) doc.getFieldValue(ID);
+        if (StringUtils.isNotBlank(prevId)) {
+            doc.setField(IS_A, prevId);
+            doc.addField(TERM_CATEGORY, prevId);
+        }
+    }
+
+    /**
+     * Processes the type of cancer tissue.
+     *
+     * @param doc the {@link SolrInputDocument} into which data is written
+     * @param name the tissue property name
+     * @param value the provided tissue property value
+     */
+    private void processTissue(
+        @Nonnull final SolrInputDocument doc,
+        @Nonnull final String name,
+        @Nonnull final String value)
+    {
+        final String tissueName = StringUtils.substringBefore(value, "(").trim();
+        doc.addField(name, tissueName);
     }
 
     /**
