@@ -28,13 +28,9 @@ define([
 
             this.familySearch = new XWiki.Document('FamilySearch', 'PhenoTips');
 
-            this.ethnicitySearch = new XWiki.Document('EthnicitySearch', 'PhenoTips');
-
-            this.geneNameService = new XWiki.Document('GeneNameService', 'PhenoTips');
-
             this.patientSuggestService = new XWiki.Document('SuggestPatientsService', 'PhenoTips');
 
-            this.omimService = new XWiki.Document('OmimService', 'PhenoTips');
+            this.solrService = XWiki.contextPath + "/rest/vocabularies";
 
             this.pedigreeInterface = new XWiki.Document('PedigreeInterface', 'PhenoTips');
 
@@ -96,11 +92,19 @@ define([
         },
 
         getEthnicitySearchURL: function() {
-            return this.ethnicitySearch.getURL("get", 'outputSyntax=plain&rand='+ Math.random());
+            this.solrService + "/ethnicity";
         },
 
-        getGeneNameServiceURL: function() {
-            return this.geneNameService.getURL("get", 'outputSyntax=plain&rand='+ Math.random());
+        getHGNCServiceURL: function() {
+            this.solrService + "/hgnc";
+        },
+
+        getHPOServiceURL: function() {
+            this.solrService + "/hpo";
+        },
+
+        getOMIMServiceURL: function() {
+            this.solrService + "/omim";
         },
 
         getPatientSuggestServiceURL: function() {
@@ -128,14 +132,6 @@ define([
 
         getPedigreeTemplatesURL: function() {
             return new XWiki.Document('WebHome', 'data').getRestURL('objects/PhenoTips.PedigreeClass/');
-        },
-
-        getOMIMServiceURL: function() {
-            return this.omimService.getURL("get", 'outputSyntax=plain&rand='+ Math.random());
-        },
-
-        getSolrServiceURL: function() {
-            return XWiki.contextPath + "/rest/vocabularies";
         },
 
         getPedigreePreferencesURL: function() {
