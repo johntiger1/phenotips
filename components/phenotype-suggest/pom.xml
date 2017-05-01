@@ -22,15 +22,16 @@
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>org.phenotips</groupId>
-    <artifactId>solr-access-service</artifactId>
+    <artifactId>phenotips-components</artifactId>
     <version>1.4-SNAPSHOT</version>
   </parent>
-  <artifactId>solr-access-service-api</artifactId>
-  <name>PhenoTips - Solr Access Service - Java code</name>
+  <artifactId>phenotype-suggest-rest</artifactId>
+  <name>PhenoTips - Phenotype suggest RESTFul API</name>
+  <description>PhenoTips - Phenotype suggest RESTFul API.</description>
+  
   <properties>
-    <coverage.instructionRatio>0.43</coverage.instructionRatio>
-    <!-- Module soon to be removed, disable checks -->
-    <clirr.skip>true</clirr.skip>
+    <checkstyle.suppressions.location>${basedir}/src/checkstyle/checkstyle-suppressions.xml</checkstyle.suppressions.location>
+    <coverage.instructionRatio>0.25</coverage.instructionRatio>
   </properties>
   <dependencies>
     <dependency>
